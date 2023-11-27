@@ -1,25 +1,27 @@
-package olegt;
+package olegt.solver;
 
 import java.util.ArrayList;
 import java.util.List;
+import olegt.model.Tuple;
+import olegt.parser.ParseResult;
 
 public class QuerySolver {
-    private final FileReader fileReader = new FileReader();
-    private final InputParser inputParser = new InputParser();
 
-    public List<Integer> solveQueries(String filename) {
-        inputParser.parse(fileReader.read(filename));
-        List<Integer> answers = new ArrayList<>(inputParser.getNumberOfQueries());
-        String sub = inputParser.getGivenString();
-        for (Tuple query : inputParser.getQueries()) {
+    public List<Integer> solveQueries(ParseResult parseResult) {
+        List<Integer> answers = new ArrayList<>(parseResult.numberOfQueries());
+        String sub = parseResult.givenString();
+        for (Tuple query : parseResult.queries()) {
             answers.add(solveQuery(sub.substring(query.l() - 1, query.r()), query.k()));
         }
         return answers;
     }
 
     private int solveQuery(String sub, int k) {
-        char ch = sub.charAt(k - 1);
         int pos = -1;
+        if (k > sub.length()) {
+            return pos;
+        }
+        char ch = sub.charAt(k - 1);
         int count = 0;
         for (int i = 0; i < k; i++) {
             if (sub.charAt(i) == ch) {
